@@ -2,13 +2,15 @@
   <div id="app">
     <div class="container">
       <div class="col-md-6 offset-md-3">
-        <h1 class="text-center">Todo-List</h1>
-        <input type="text" class="form-control md-4" v-model="userInput" @keyup.enter="addNewTodo">
+        <h1 class="text-center">Vue-Todo-List</h1>
+        <input type="text" class="form-control mb-4" v-model="userInput" @keyup.enter="addNewTodo">
 
         <div class="list-group">
-          <button class="list-group-item text-left" v-for="todo in todoList" v-bind:key="todo">
-            {{ todo }}
+          <template v-for="todo in todoList">
+          <button class="list-group-item text-left" v-bind:key="todo" @click="toogleTodoState(todo)">
+            {{ todo.label }}
           </button>
+          </template>
         </div>
       </div>
     </div>
@@ -26,8 +28,14 @@ export default {
   },
   methods: {
     addNewTodo() {
-      this.todoList.push(this.userInput);
+      this.todoList.push({
+        label: this.userInput,
+        state: 'active'
+      });
       this.userInput = '';
+    },
+    toogleTodoState(todo) {
+      todo.state = todo.state === 'active' ? 'done' : 'active';
     }
   },
   components: {
