@@ -5,12 +5,18 @@
         <h1 class="text-center">Vue-Todo-List</h1>
         <input type="text" class="form-control mb-4" v-model="userInput" @keyup.enter="addNewTodo">
 
-        <div class="list-group">
-          <template v-for="todo in todoList">
-          <button class="list-group-item text-left" v-bind:key="todo" @click="toogleTodoState(todo)">
-            {{ todo.label }}
-          </button>
+        <div class="list-group mb-4">
+          <template v-for="todo in activeTodoList">
+              <todo 
+                    :label="todo.label"
+                    @componentClick="toggleTodoState(todo)" :key="todo"/>
           </template>
+        </div>
+
+        <div class="text-right">
+          <button type="button" class="btn btn-sm" @click="changeCurrentState('active')">할 일</button>
+          <button type="button" class="btn btn-sm" @click="changeCurrentState('done')">완료</button>
+          <button type="button" class="btn btn-sm" @click="changeCurrentState('all')">전체</button>
         </div>
       </div>
     </div>
@@ -18,15 +24,26 @@
 </template>
 
 <script>
+import Todo from './components/Todo'
+
 export default {
   name: 'App',
   data() {
     return {
       userInput: '',
-      todoList: []
+      todoList: [],
+      currentState: 'active'
     };
   },
+  computed: {
+    activeTodoList() {
+      return this.todoList.filter(todo => this.currentState === 'all' || todo.state === this.currentState);
+    }
+  },
   methods: {
+    changeCurrentState(state) {
+      this.currentState = state;
+    },
     addNewTodo() {
       this.todoList.push({
         label: this.userInput,
@@ -34,11 +51,13 @@ export default {
       });
       this.userInput = '';
     },
-    toogleTodoState(todo) {
+    toggleTodoState(todo) {
+      console.info(todo);
       todo.state = todo.state === 'active' ? 'done' : 'active';
     }
   },
   components: {
+    Todo
   }
 }
 </script>
